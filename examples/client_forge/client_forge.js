@@ -1,5 +1,8 @@
-var mc = require('minecraft-protocol');
-var fml = require('../..');
+'use strict';
+
+var mc = require('../..');
+var ping = require('minecraft-protocol').ping;
+var assert = require('assert');
 
 if(process.argv.length < 4 || process.argv.length > 6) {
   console.log("Usage : node echo.js <host> <port> [<name>] [<password>]");
@@ -11,7 +14,7 @@ var port = parseInt(process.argv[3]);
 var username =  process.argv[4] ? process.argv[4] : "echo";
 var password = process.argv[5];
 
-mc.ping({host, port}, function(err, response) {
+ping({host, port}, function(err, response) {
   if (err) throw err;
   console.log('ping response',response);
   if (!response.modinfo || response.modinfo.type !== 'FML') {
@@ -24,14 +27,7 @@ mc.ping({host, port}, function(err, response) {
   var forgeMods = response.modinfo.modList;
   console.log('Using forgeMods:',forgeMods);
 
-  var client = mc.createClient({
-    //TODO: tagHost: '\0FML\0', // signifies client supports FML/Forge
-    // works in released minecraft-protocol 0.16.6, but how does it interact with DNS SRV resolution? maybe not completely correct
-    host: host + '\0FML\0',
-    port: port,
-    username: username,
-    password: password
-  });
+  var client = mc.createClient({host, port, username, password});
   client.forgeMods = forgeMods; // for fmlHandshakeStep TODO: refactor
 
   client.on('connect', function() {
@@ -50,13 +46,6 @@ mc.ping({host, port}, function(err, response) {
       var msg = jsonMsg.with[1];
       if(username === client.username) return;
       client.write('chat', {message: msg});
-    }
-  });
-
-  client.on('custom_payload', function(packet) {
-    // TODO: channel registration tracking in NMP, https://github.com/PrismarineJS/node-minecraft-protocol/pull/328
-    if (packet.channel === 'FML|HS') {
-      fml.fmlHandshakeStep(client, packet.data);
     }
   });
 

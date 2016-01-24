@@ -16,6 +16,21 @@ automatically perform the FML/Forge handshake. Try the included example:
 
     npm start
 
+## API
+
+`createClient(options)` returns a node-minecraft-protocol client, with
+additionally the following:
+
+### .forgeMods property
+
+Set to an array of objects with `modid` and `version` properties supported
+by the client. You can get this from the ping packet, or the server may reject you
+for not having th required mods installed.
+
+### "forgeMods" event
+
+Emitted with a list of the server's mods, when received.
+
 ## Installation
 
 `npm install minecraft-protocol-forge`
