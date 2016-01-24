@@ -8,6 +8,7 @@
     "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"
   },
   "scripts": {
+    "start": "(cd examples/client_forge; node client_forge.js localhost 25565)"
   },
   "keywords": [
     "minecraft",

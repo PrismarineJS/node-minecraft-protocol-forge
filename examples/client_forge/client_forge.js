@@ -1,5 +1,5 @@
 var mc = require('minecraft-protocol');
-var fml = require('../../dist/fml'); // TODO: separate module
+var fml = require('../../fml');
 
 if(process.argv.length < 4 || process.argv.length > 6) {
   console.log("Usage : node echo.js <host> <port> [<name>] [<password>]");
@@ -25,13 +25,9 @@ mc.ping({host, port}, function(err, response) {
   console.log('Using forgeMods:',forgeMods);
 
   var client = mc.createClient({
-    tagHost: '\0FML\0', // signifies client supports FML/Forge
-    // Client/server mods installed on the client
-    // if not specified, pings server and uses its list
-    /*
-    forgeMods:
-    */
-    host: host,
+    //TODO: tagHost: '\0FML\0', // signifies client supports FML/Forge
+    // works in released minecraft-protocol 0.16.6, but how does it interact with DNS SRV resolution? maybe not completely correct
+    host: host + '\0FML\0',
     port: port,
     username: username,
     password: password
