@@ -1,5 +1,5 @@
 var mc = require('minecraft-protocol');
-var fml = require('../../fml');
+var fml = require('../..');
 
 if(process.argv.length < 4 || process.argv.length > 6) {
   console.log("Usage : node echo.js <host> <port> [<name>] [<password>]");
