@@ -1,0 +1,32 @@
+{
+  "name": "minecraft-protocol-forge",
+  "version": "0.0.0",
+  "description": "Adds FML/Forge support to node-minecraft-protocol",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"
+  },
+  "scripts": {
+  },
+  "keywords": [
+    "minecraft",
+    "protocol",
+    "parse",
+    "serialize",
+    "packet",
+    "bot",
+    "forge",
+    "fml"
+  ],
+  "author": "deathcap",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">=4"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "protodef": "0.2.5"
+  }
+}
