@@ -12,7 +12,9 @@ Adds FML/Forge support to [node-minecraft-protocol](https://github.com/Prismarin
 ## Usage
 
 Should be usable nearly the same as node-minecraft-protocol, but will
-automatically perform the FML/Forge handshake. Checkout the included example.
+automatically perform the FML/Forge handshake. Try the included example:
+
+    npm start
 
 ## Installation
 
