@@ -2,7 +2,6 @@
   "name": "minecraft-protocol-forge",
   "version": "0.0.0",
   "description": "Adds FML/Forge support to node-minecraft-protocol",
-  "main": "fml.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"

@@ -11,8 +11,30 @@ Adds FML/Forge support to [node-minecraft-protocol](https://github.com/Prismarin
 
 ## Usage
 
-Should be usable nearly the same as node-minecraft-protocol, but will
-automatically perform the FML/Forge handshake. Try the included example:
+Installable as a plugin for use with node-minecraft-protocol:
+
+```javascript
+var mc = require('minecraft-protocol');
+var forgeHandshake = require('minecraft-protocol-forge').forgeHandshake;
+var client = mc.createClient({
+    host: host,
+    port: port,
+    username: username,
+    password: password
+});
+
+forgeHandshake(client, {forgeMods: [
+  { modid: 'mcp', version: '9.18' },
+  { modid: 'FML', version: '8.0.99.99' },
+  { modid: 'Forge', version: '11.15.0.1715' },
+  { modid: 'IronChest', version: '6.0.121.768' }
+]);
+```
+
+The `forgeMods` option is an array of modification identifiers and versions to present
+to the server. Servers will kick the client if they do not have the required mods.
+
+## Example
 
     npm start
 
