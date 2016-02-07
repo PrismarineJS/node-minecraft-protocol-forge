@@ -1,5 +1,5 @@
 var mc = require('minecraft-protocol');
-var forgeHandshake = require('./src/client/forgeHandshake');
+var forgeHandshake = require('../../src/client/forgeHandshake');
 
 if(process.argv.length < 4 || process.argv.length > 6) {
   console.log("Usage : node echo.js <host> <port> [<name>] [<password>]");
@@ -25,7 +25,6 @@ mc.ping({host, port}, function(err, response) {
   console.log('Using forgeMods:',forgeMods);
 
   var client = mc.createClient({
-    tagHost: '\0FML\0', // passed to src/client/setProtocol.js, signifies client supports FML/Forge TODO: refactor into src/client/forgeHandshake.js, let it set it, but earliest enough(pause)
     host: host,
     port: port,
     username: username,
