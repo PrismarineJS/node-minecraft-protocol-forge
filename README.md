@@ -34,6 +34,28 @@ forgeHandshake(client, {forgeMods: [
 The `forgeMods` option is an array of modification identifiers and versions to present
 to the server. Servers will kick the client if they do not have the required mods.
 
+To automatically present the list of mods offered by the server, the `autoVersionForge`
+plugin for node-minecraft-protocol's `autoVersion` (activated by `version: false`) can
+be used:
+
+```javascript
+var mc = require('minecraft-protocol');
+var autoVersionForge = require('minecraft-protocol-forge').autoVersionForge;
+var client = mc.createClient({
+    version: false,
+    host: host,
+    port: port,
+    username: username,
+    password: password
+});
+
+autoVersionForge(client);
+```
+
+This will automatically install the `forgeHandshake` plugin, with the appropriate mods,
+if the server advertises itself as Forge/FML. Useful for connecting to servers you don't
+know if they are Forge or not, or what mods they are using.
+
 ## Example
 
     npm start

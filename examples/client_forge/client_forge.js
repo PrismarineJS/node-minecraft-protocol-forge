@@ -1,5 +1,6 @@
 var mc = require('minecraft-protocol');
 var forgeHandshake = require('../../src/client/forgeHandshake');
+var autoVersionForge = require('../../src/client/autoVersionForge');
 
 if(process.argv.length < 4 || process.argv.length > 6) {
   console.log("Usage : node echo.js <host> <port> [<name>] [<password>]");
@@ -11,26 +12,16 @@ var port = parseInt(process.argv[3]);
 var username =  process.argv[4] ? process.argv[4] : "echo";
 var password = process.argv[5];
 
-mc.ping({host, port}, function(err, response) {
-  if (err) throw err;
-  console.log('ping response',response);
-  if (!response.modinfo || response.modinfo.type !== 'FML') {
-    throw new Error('not an FML server, aborting connection');
-    // TODO: gracefully connect non-FML
-    // TODO: could also use ping pre-connect to save description, type, negotiate protocol etc.
-    //  ^ see https://github.com/PrismarineJS/node-minecraft-protocol/issues/327 
-  }
-  // Use the list of Forge mods from the server ping, so client will match server
-  var forgeMods = response.modinfo.modList;
-  console.log('Using forgeMods:',forgeMods);
-
   var client = mc.createClient({
+    version: false,
     host: host,
     port: port,
     username: username,
     password: password
   });
-  forgeHandshake(client, {forgeMods});
+  autoVersionForge(client);
+  //forgeHandshake(client, {forgeMods});
+  //forgeHandshake(client, {});
 
   client.on('connect', function() {
     console.info('connected');
@@ -54,4 +45,3 @@ mc.ping({host, port}, function(err, response) {
   client.on('forgeMods', function(mods) {
     console.log('Received forgeMods event:',mods);
   });
-});
