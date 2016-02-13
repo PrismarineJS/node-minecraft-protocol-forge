@@ -1,6 +1,6 @@
 {
   "name": "minecraft-protocol-forge",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Adds FML/Forge support to node-minecraft-protocol",
   "repository": {
     "type": "git",
@@ -24,8 +24,7 @@
   "engines": {
     "node": ">=4"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "protodef": "0.2.5"
   }
