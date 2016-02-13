@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "minecraft-protocol": "^0.16.6"
+    "minecraft-protocol": "^0.17.2"
   },
   "description": "A minecraft-protocol-forge example"
 }
