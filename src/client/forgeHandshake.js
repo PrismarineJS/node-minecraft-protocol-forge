@@ -15,7 +15,7 @@ proto.addType('fml|hsMapper',
   [
     "mapper",
     {
-      "type": "byte",
+      "type": "i8",
       "mappings": {
         "0": "ServerHello",
         "1": "ClientHello",
@@ -52,7 +52,7 @@ proto.addType('FML|HS',
                 [
                   {
                     "name": "fmlProtocolVersion",
-                    "type": "byte"
+                    "type": "i8"
                   },
                   {
                     "name": "overrideDimension",
@@ -67,7 +67,7 @@ proto.addType('FML|HS',
                           "0": "void",
                           "1": "void"
                         },
-                        "default": "int"
+                        "default": "i32"
                       }
                     ]
                   },
@@ -80,7 +80,7 @@ proto.addType('FML|HS',
                 [
                   {
                     "name": "fmlProtocolVersion",
-                    "type": "byte"
+                    "type": "i8"
                   }
                 ]
               ],
@@ -140,7 +140,7 @@ proto.addType('FML|HS',
                 [
                   {
                     "name": "phase",
-                    "type": "byte"
+                    "type": "i8"
                   },
                 ],
               ],
