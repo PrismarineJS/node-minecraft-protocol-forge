@@ -125,7 +125,9 @@ proto.addType('FML|HS',
                     "type": "bool"
                   },
 
-                  /* TODO: support all fields
+                  /* TODO: support all fields http://wiki.vg/Minecraft_Forge_Handshake#RegistryData
+                   * TODO: but also consider http://wiki.vg/Minecraft_Forge_Handshake#ModIdData
+                   *  and https://github.com/ORelio/Minecraft-Console-Client/pull/100/files#diff-65b97c02a9736311374109e22d30ca9cR297
                   {
                     "name": "registryName",
                     "type": "string"
@@ -230,8 +232,9 @@ function fmlHandshakeStep(client, data, options)
     {
       assert.ok(parsed.data.discriminator === 'RegistryData', `expected RegistryData in WAITINGSERVERCOMPLETE, got ${parsed.data.discriminator}`);
       debug('RegistryData',parsed.data);
-      // TODO: support <=1.7.10 single registry, https://github.com/ORelio/Minecraft-Console-Client/pull/100/files#diff-65b97c02a9736311374109e22d30ca9cR297
-      if (parsed.data.hasMore === false) {
+      console.log('RegistryData',parsed);
+      if (client.version === '1.7.10' // actually ModIdData packet, and there is only one of those TODO: avoid hardcoding version, allow earlier
+          || parsed.data.hasMore === false) { // RegistryData packet 1.8+ hasMore boolean field, set to false when ready to ack
         debug('LAST RegistryData');
 
         writeAck(client, FMLHandshakeClientState.WAITINGSERVERCOMPLETE);
