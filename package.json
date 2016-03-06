@@ -7,7 +7,8 @@
     "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"
   },
   "scripts": {
-    "start": "(cd examples/client_forge; node client_forge.js localhost 25565)"
+    "start": "(cd examples/client_forge; node client_forge.js localhost 25565)",
+    "test": "mocha"
   },
   "keywords": [
     "minecraft",
@@ -24,7 +25,10 @@
   "engines": {
     "node": ">=4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
   "dependencies": {
     "protodef": "^1.0.0"
   }
