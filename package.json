@@ -1,10 +1,10 @@
 {
   "name": "minecraft-protocol-forge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Adds FML/Forge support to node-minecraft-protocol",
   "repository": {
     "type": "git",
-    "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"
+    "url": "git://github.com/PrismarineJS/node-minecraft-protocol-forge.git"
   },
   "scripts": {
     "start": "(cd examples/client_forge; node client_forge.js localhost 25565)"
@@ -19,13 +19,13 @@
     "forge",
     "fml"
   ],
-  "author": "deathcap",
+  "author": "PrismarineJS",
   "license": "BSD-3-Clause",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "devDependencies": {},
   "dependencies": {
-    "protodef": "^1.0.0"
+    "protodef": "^1.8.3"
   }
 }
