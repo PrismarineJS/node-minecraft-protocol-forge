@@ -28,7 +28,7 @@ forgeHandshake(client, {forgeMods: [
   { modid: 'FML', version: '8.0.99.99' },
   { modid: 'Forge', version: '11.15.0.1715' },
   { modid: 'IronChest', version: '6.0.121.768' }
-]);
+]});
 ```
 
 The `forgeMods` option is an array of modification identifiers and versions to present
