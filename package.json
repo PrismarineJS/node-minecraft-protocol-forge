@@ -24,8 +24,8 @@
   "engines": {
     "node": ">=4"
   },
-  "devDependencies": {},
   "dependencies": {
+    "bytebuffer": "^5.0.1",
     "protodef": "^1.0.0"
   }
 }
