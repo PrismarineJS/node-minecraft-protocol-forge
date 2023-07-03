@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "bytebuffer": "^5.0.1",
+    "minecraft-protocol": "^1.43.1",
     "protodef": "^1.0.0"
   }
 }

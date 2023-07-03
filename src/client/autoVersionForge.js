@@ -1,9 +1,44 @@
 'use strict';
 
 var forgeHandshake = require('./forgeHandshake');
+var forgeHandshake2 = require('./forgeHandshake2')
+var forgeHandshake3 = require('./forgeHandshake3')
+
 const ByteBuffer = require("bytebuffer")
 
-function decodeOptimized(s) {
+function unicodeLiteral(str){
+  var i;
+  var result = "";
+  var checker = true;
+
+  for( i = 0; i < str.length; ++i){ 
+    if ((i + 1) === str.length) break;
+
+      if(str.charCodeAt(i) > 126 || str.charCodeAt(i) < 32) {
+        if (checker) continue
+
+        result += "|"
+        checker = true
+      } else {
+        result += str[i];
+        checker = false
+      }
+  }
+  return result
+}
+
+
+function remove_non_ascii(str) {
+  
+  if ((str===null) || (str===''))
+       return false;
+ else
+   str = str.toString();
+  
+  return str.replace(/[^\x20-\x7E]/g, '');
+}
+
+function parse_data(s) {
 
   var buf = new ByteBuffer()
 
@@ -22,61 +57,91 @@ function decodeOptimized(s) {
       bitsInBuf += 15
       stringIndex++
   }
+
   buf.flip()
 
-  return buf
-}
+  var parsed = remove_non_ascii(unicodeLiteral(buf.readString(buf.limit))).split("|")
 
-function fixedHex(number, length){
-  var str = number.toString(16).toUpperCase();
-  while(str.length < length)
-      str = "0" + str;
-  return str;
-}
+  var index = 0
 
-function unicodeLiteral(str){
-  var i;
-  var result = "";
-  for( i = 0; i < str.length; ++i){ 
-      if(str.charCodeAt(i) > 126 || str.charCodeAt(i) < 32) {
-        console.log(result)
-          result += "|"
-      } else {
-        result += str[i];
-      }
+  var forgeMods = []
+  var modNames = []
+  var channels = [
+    {name: "fml:play", marker: "FML3"}
+  ]
+
+  while (index < parsed.length) {
+
+    let modid = parsed[index]
+    let version = parsed[index+1]
+
+    if (["register", "unregister"].includes(modid)) {
+
+      channels.push(
+        {
+        name : `minecraft:${modid}`,
+        marker : "FML3"
+        }
+      )
+
+      index += 2
+      continue
+    }
+
+    if (modid === "tier_sorting") {
+
+      channels.push({
+        name : `forge:${modid}`,
+         marker : "1.0"
+      })
+
+      index += 2
+      continue
+    }
+    if (modid === "split") {
+      channels.push({
+        name : `forge:${modid}`,
+        marker : "1.1"
+      })
+
+      index += 2
+      continue
+    }
+
+    if (parsed[index+2] === "main_channel") {
+      let channel = `${modid}:main_channel`
+      let version = parsed[index+3]
+
+      channels.push({name : channel, marker : version})
+      index += 4
+      continue
+    }
+    index += 2
+
+    forgeMods.push(
+      {"modId" : modid, "marker": version}
+    )
+    modNames.push(modid)
   }
 
-  return result;
-}
-
-function remove_non_ascii(str) {
-  
-  if ((str===null) || (str===''))
-       return false;
- else
-   str = str.toString();
-  
-  return str.replace(/[^\x20-\x7E]/g, '');
+  return { forgeMods, channels, modNames }
 }
 
 module.exports = function (client, options) {
   if (!client.autoVersionHooks) client.autoVersionHooks = [];
 
   client.autoVersionHooks.push(function (response, client, options) {
-    var buff = decodeOptimized(response.forgeData.d)
 
-    var mods_weird = remove_non_ascii(unicodeLiteral(buff.readString(buff.limit)))
-
-    var list = mods_weird.match(/\|(.+)\|/)
-
-    console.log(list)
+    if (!response.modinfo || response.modinfo.type !== 'FML') {
+      return; // not ours
+    }
 
     // Use the list of Forge mods from the server ping, so client will match server
-    // var forgeMods = response.modinfo.modList;
-    // console.log('Using forgeMods:', forgeMods);
+    var forgeMods = response.modinfo.modList;
+    console.log('Using forgeMods:', forgeMods);
 
     // Install the FML|HS plugin with the given mods
-    // forgeHandshake(client, { forgeMods: forgeMods });
+    forgeHandshake(client, { forgeMods: forgeMods });
   });
 
   client.autoVersionHooks.push(function (response, client, options) {
@@ -91,4 +156,20 @@ module.exports = function (client, options) {
     // Install the FML|HS plugin with the given mods
     forgeHandshake2(client, { forgeMods });
   });
-};
+
+  client.autoVersionHooks.push(function (response, client, options) {
+    if (!response.forgeData || !response.forgeData.d) {
+      return // not ours
+    }
+
+    var forgeData = parse_data(response.forgeData.d)
+
+    var mods = forgeData.forgeMods
+    var channels = forgeData.channels
+    var modNames = forgeData.modNames
+
+    console.log(modNames)
+
+    forgeHandshake3(client, { mods, channels, modNames })
+  })
+}
