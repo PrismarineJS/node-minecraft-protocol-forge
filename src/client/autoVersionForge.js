@@ -1,11 +1,14 @@
 'use strict';
 
 var forgeHandshake = require('./forgeHandshake');
+var forgeHandshake2 = require('./forgeHandshake2')
+var forgeHandshake3 = require('./forgeHandshake3')
 
 module.exports = function (client, options) {
   if (!client.autoVersionHooks) client.autoVersionHooks = [];
 
   client.autoVersionHooks.push(function (response, client, options) {
+
     if (!response.modinfo || response.modinfo.type !== 'FML') {
       return; // not ours
     }
@@ -30,4 +33,12 @@ module.exports = function (client, options) {
     // Install the FML|HS plugin with the given mods
     forgeHandshake2(client, { forgeMods });
   });
-};
+
+  client.autoVersionHooks.push(function (response, client, options) {
+    if (!response.forgeData || !response.forgeData.d) {
+      return // not ours
+    }
+
+    forgeHandshake3(client)
+  })
+}

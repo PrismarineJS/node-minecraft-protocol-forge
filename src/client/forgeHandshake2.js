@@ -43,7 +43,7 @@ proto.addTypes({
   ],
 });
 
-proto.addProtocol(require("./fml2.json"), ["fml2"]);
+proto.addProtocol(require("./data/fml2.json"), ["fml2"]);
 
 /**
  * FML2 handshake to the server.

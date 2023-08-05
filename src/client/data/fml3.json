@@ -1,0 +1,311 @@
+{
+  "types": {
+    "pstring": "native",
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "restBuffer": "native",
+    "forge_snapshot": [
+      "container",
+      [
+        {
+          "name": "ids",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "key",
+                    "type": "string"
+                  },
+                  {
+                    "name": "value",
+                    "type": "varint"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "aliases",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "key",
+                    "type": "string"
+                  },
+                  {
+                    "name": "value",
+                    "type": "string"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "overrides",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "key",
+                    "type": "string"
+                  },
+                  {
+                    "name": "value",
+                    "type": "string"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "blocked",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": "varint"
+            }
+          ]
+        },
+        {
+          "name": "dummied",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    ],
+    "fml_loginwrapper": [
+      "container",
+      [
+        {
+          "name": "channel",
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "type": [
+            "buffer",
+            {
+              "countType": "varint"
+            }
+          ]
+        }
+      ]
+    ],
+    "fml_handshake": [
+      "container",
+      [
+        {
+          "name": "discriminator",
+          "type": [
+            "mapper",
+            {
+              "type": "varint",
+              "mappings": {
+                "0": "ModList",
+                "1": "ModListReply",
+                "2": "ServerRegistry",
+                "3": "ConfigurationData",
+                "5": "ModData",
+                "6": "ChannelMismatchData",
+                "99": "Acknowledgement"
+              }
+            }
+          ]
+        },
+        {
+          "name": "data",
+          "type": [
+            "switch",
+            {
+              "compareTo": "discriminator",
+              "fields": {
+                "ModList": [
+                  "container",
+                  [
+                    {
+                      "name": "modNames",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "channels",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              },
+                              {
+                                "name": "marker",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "registries",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "ModListReply": [
+                  "container",
+                  [
+                    {
+                      "name": "modCount",
+                      "type": "varint"
+                      
+                    },
+                    {
+                      "name": "modNames",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "channelCount",
+                      "type": "varint"
+                      
+                    },
+                    {
+                      "name": "channels",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              },
+                              {
+                                "name": "marker",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "registries",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              },
+                              {
+                                "name": "marker",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "ServerRegistry": [
+                  "container",
+                  [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    },
+                    {
+                      "name": "snapshot",
+                      "type": [
+                        "option",
+                        "forge_snapshot"
+                      ]
+                    }
+                  ]
+                ],
+                "ConfigurationData": [
+                  "container",
+                  [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    },
+                    {
+                      "name": "data",
+                      "type": "restBuffer"
+                    }
+                  ]
+                ],
+                "Acknowledgement": "void",
+                "ModData" : "void",
+                "ChannelMismatchData" : "void"
+              }
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}
