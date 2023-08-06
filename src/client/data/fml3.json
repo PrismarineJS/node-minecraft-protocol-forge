@@ -316,9 +316,73 @@
                     }
                   ]
                 ],
-                "Acknowledgement": "void",
-                "ModData" : "void",
-                "ChannelMismatchData" : "void"
+                "ModData": [
+                  "container",
+                  [
+                    {
+                      "name": "mods",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "key",
+                                "type": "string"
+                              },
+                              {
+                                "name": "value",
+                                "type": [
+                                  "container",
+                                  [
+                                    {
+                                      "name": "first",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "name": "second",
+                                      "type": "string"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "ChannelMismatchData": [
+                  "container",
+                  [
+                    {
+                      "name": "mismatchedChannelData",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "first",
+                                "type": "string"
+                              },
+                              {
+                                "name": "second",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "Acknowledgement": "void"
               }
             }
           ]
