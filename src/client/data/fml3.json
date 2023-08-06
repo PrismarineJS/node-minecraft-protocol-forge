@@ -127,10 +127,10 @@
             {
               "type": "varint",
               "mappings": {
-                "0": "ModList",
-                "1": "ModListReply",
-                "2": "ServerRegistry",
-                "3": "ConfigurationData",
+                "1": "ModList",
+                "2": "ModListReply",
+                "3": "ServerRegistry",
+                "4": "ConfigurationData",
                 "5": "ModData",
                 "6": "ChannelMismatchData",
                 "99": "Acknowledgement"
