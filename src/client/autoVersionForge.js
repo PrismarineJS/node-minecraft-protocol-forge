@@ -30,7 +30,7 @@ module.exports = function (client, options) {
     var forgeMods = response.forgeData.mods;
     console.log('Using forgeMods:', forgeMods);
 
-    // Install the FML|HS plugin with the given mods
+    // Install the FML2 plugin with the given mods
     forgeHandshake2(client, { forgeMods });
   });
 
@@ -39,6 +39,11 @@ module.exports = function (client, options) {
       return // not ours
     }
 
-    forgeHandshake3(client)
-  })
+    // Use the list of Forge mods from the server ping, so client will match server
+    var forgeMods = response.forgeData.mods;
+    console.log('Using forgeMods:', forgeMods);
+
+    // Install the FML3 plugin with the given mods
+    forgeHandshake3(client, { forgeMods });
+  });
 }
