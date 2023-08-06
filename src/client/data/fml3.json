@@ -197,6 +197,24 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "name": "dataPackRegistries",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
                     }
                   ]
                 ],
