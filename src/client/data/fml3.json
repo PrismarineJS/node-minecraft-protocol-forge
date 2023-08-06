@@ -222,11 +222,6 @@
                   "container",
                   [
                     {
-                      "name": "modCount",
-                      "type": "varint"
-                      
-                    },
-                    {
                       "name": "modNames",
                       "type": [
                         "array",
@@ -235,11 +230,6 @@
                           "type": "string"
                         }
                       ]
-                    },
-                    {
-                      "name": "channelCount",
-                      "type": "varint"
-                      
                     },
                     {
                       "name": "channels",
