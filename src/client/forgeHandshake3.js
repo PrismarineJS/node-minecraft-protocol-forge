@@ -274,7 +274,7 @@ module.exports = function (client, options) {
 
 	  client.write("login_plugin_response", {
 	    messageId: data.messageId,
-            data: q_loginwrapperpacket,
+            data: quark_loginwrapperpacket,
 	  });
 	  break;
 		      
