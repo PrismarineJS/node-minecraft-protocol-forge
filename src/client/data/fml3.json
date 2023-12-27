@@ -133,6 +133,7 @@
                 "4": "ConfigurationData",
                 "5": "ModData",
                 "6": "ChannelMismatchData",
+                "98": "Quark",
                 "99": "Acknowledgement"
               }
             }
@@ -372,6 +373,7 @@
                     }
                   ]
                 ],
+                "Quark": "void",
                 "Acknowledgement": "void"
               }
             }
