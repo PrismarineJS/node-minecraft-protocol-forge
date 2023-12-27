@@ -247,6 +247,37 @@ module.exports = function (client, options) {
           });
           break;
 
+	case "quark:main":
+	  const { data: quark_handshake } = proto.parsePacketBuffer(
+            PROTODEF_TYPES.HANDSHAKE,
+            loginwrapper.data
+          );
+
+	  let quark_loginwrapperpacket = Buffer.alloc(0);
+
+	  switch (quark_handshake.discriminator) {
+	    // respond with Ack
+	    case "Quark":
+	      const quark = quark_handshake.data;
+	      quark_loginwrapperpacket = proto.createPacketBuffer(
+		PROTODEF_TYPES.LOGINWRAPPER,
+                {
+                  channel: FML_CHANNELS.HANDSHAKE,
+                  data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
+                    discriminator: "Acknowledgement",
+                    data: {}
+                  }),
+                }
+	      );
+	      break;
+	  }
+
+	  client.write("login_plugin_response", {
+	    messageId: data.messageId,
+            data: q_loginwrapperpacket,
+	  });
+	  break;
+		      
         default:
           console.log(
             "other loginwrapperchannel",
