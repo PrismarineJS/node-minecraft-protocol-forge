@@ -1,28 +1,27 @@
-const ProtoDef = require("protodef").ProtoDef;
-const Client = require("minecraft-protocol").Client;
-const debug = require("debug")("minecraft-protocol-forge")
+const ProtoDef = require('protodef').ProtoDef
+const debug = require('debug')('minecraft-protocol-forge')
 
 // Channels
 const FML_CHANNELS = {
-  LOGINWRAPPER: "fml:loginwrapper",
-  HANDSHAKE: "fml:handshake",
-};
+  LOGINWRAPPER: 'fml:loginwrapper',
+  HANDSHAKE: 'fml:handshake'
+}
 
 const PROTODEF_TYPES = {
-  LOGINWRAPPER: "fml_loginwrapper",
-  HANDSHAKE: "fml_handshake",
-};
+  LOGINWRAPPER: 'fml_loginwrapper',
+  HANDSHAKE: 'fml_handshake'
+}
 
 // Initialize Proto
-const proto = new ProtoDef(false);
+const proto = new ProtoDef(false)
 
 // copied from ../../dist/transforms/serializer.js
-proto.addType("string", [
-  "pstring",
+proto.addType('string', [
+  'pstring',
   {
-    countType: "varint",
-  },
-]);
+    countType: 'varint'
+  }
+])
 
 // copied from node-minecraft-protocol
 proto.addTypes({
@@ -30,20 +29,20 @@ proto.addTypes({
     (buffer, offset) => {
       return {
         value: buffer.slice(offset),
-        size: buffer.length - offset,
-      };
+        size: buffer.length - offset
+      }
     },
     (value, buffer, offset) => {
-      value.copy(buffer, offset);
-      return offset + value.length;
+      value.copy(buffer, offset)
+      return offset + value.length
     },
     (value) => {
-      return value.length;
-    },
-  ],
-});
+      return value.length
+    }
+  ]
+})
 
-proto.addProtocol(require("./data/fml3.json"), ["fml3"]);
+proto.addProtocol(require('./data/fml3.json'), ['fml3'])
 
 /**
  * FML3 handshake to the server.
@@ -56,31 +55,30 @@ proto.addProtocol(require("./data/fml3.json"), ["fml3"]);
  * }} options
  */
 module.exports = function (client, options) {
-
-  const modNames = options.forgeMods;
-  const channels = options.channels;
-  const registries = options.registries;
+  const modNames = options.forgeMods
+  const channels = options.channels
+  const registries = options.registries
 
   // passed to src/client/setProtocol.js, signifies client supports FML2/Forge
-  client.tagHost = "\0FML3\0";
-  debug("initialized FML3 handler");
+  client.tagHost = '\0FML3\0'
+  debug('initialized FML3 handler')
   if (!modNames) {
     debug("trying to guess modNames by reflecting the servers'")
   } else {
-    debug("modNames:", modNames)
+    debug('modNames:', modNames)
   }
   if (!channels) {
     debug("trying to guess channels by reflecting the servers'")
   } else {
     Object.entries(channels).forEach((name, marker) => {
-      debug("channel", name, marker)
+      debug('channel', name, marker)
     })
   }
   if (!registries) {
     debug("trying to guess registries by reflecting the servers'")
   } else {
     Object.entries(registries).forEach((name, marker) => {
-      debug("registry", name, marker)
+      debug('registry', name, marker)
     })
   }
 
@@ -88,34 +86,33 @@ module.exports = function (client, options) {
 
   // remove default login_plugin_request listener which would answer with an empty packet
   // and make the server disconnect us
-  let nmplistener = client.listeners('login_plugin_request').find((fn) => fn.name == 'onLoginPluginRequest')
+  const nmplistener = client.listeners('login_plugin_request').find((fn) => fn.name === 'onLoginPluginRequest')
   client.removeListener('login_plugin_request', nmplistener)
 
-  client.on("login_plugin_request", (data) => {
-
-    if (data.channel === "fml:loginwrapper") {
+  client.on('login_plugin_request', (data) => {
+    if (data.channel === 'fml:loginwrapper') {
       // parse buffer
       const { data: loginwrapper } = proto.parsePacketBuffer(
         PROTODEF_TYPES.LOGINWRAPPER,
         data.data
-      );
+      )
 
       if (!loginwrapper.channel) {
-        console.error(loginwrapper);
+        console.error(loginwrapper)
       }
 
       switch (loginwrapper.channel) {
-        case "fml:handshake":
+        case 'fml:handshake': {
           const { data: handshake } = proto.parsePacketBuffer(
             PROTODEF_TYPES.HANDSHAKE,
             loginwrapper.data
-          );
+          )
 
-          let loginwrapperpacket = Buffer.alloc(0);
+          let loginwrapperpacket = Buffer.alloc(0)
           switch (handshake.discriminator) {
             // respond with ModListResponse
-            case "ModList":
-              const modlist = handshake.data;
+            case 'ModList': {
+              const modlist = handshake.data
 
               const modlistreply = {
                 modNames,
@@ -129,7 +126,7 @@ module.exports = function (client, options) {
 
               if (!options.channels) {
                 for (const { name, marker } of modlist.channels) {
-                  if (marker != 'FML3') {
+                  if (marker !== 'FML3') {
                     modlistreply.channels.push({ name, marker })
                   }
                 }
@@ -158,136 +155,138 @@ module.exports = function (client, options) {
               const modlistreplypacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.HANDSHAKE,
                 {
-                  discriminator: "ModListReply",
-                  data: modlistreply,
+                  discriminator: 'ModListReply',
+                  data: modlistreply
                 }
-              );
+              )
 
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
-                  data: modlistreplypacket,
+                  data: modlistreplypacket
                 }
-              );
-              break;
+              )
+              break
+            }
 
             // this shouldn't happen
-            case "ModListReply":
-              throw Error("received clientbound-only ModListReply from server");
+            case 'ModListReply':
+              throw Error('received clientbound-only ModListReply from server')
 
             // respond with Ack
-            case "ServerRegistry":
-              const serverregistry = handshake.data;
+            case 'ServerRegistry': {
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
                   data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: "Acknowledgement",
+                    discriminator: 'Acknowledgement',
                     data: {}
-                  }),
+                  })
                 }
-              );
-              break;
+              )
+              break
+            }
 
             // respond with Ack
-            case "ConfigurationData":
-              const configurationdata = handshake.data;
+            case 'ConfigurationData': {
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
                   data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: "Acknowledgement",
+                    discriminator: 'Acknowledgement',
                     data: {}
-                  }),
+                  })
                 }
-              );
-              break;
+              )
+              break
+            }
 
             // respond with Ack
-            case "ModData":
-              const moddata = handshake.data;
+            case 'ModData': {
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
                   data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: "Acknowledgement",
+                    discriminator: 'Acknowledgement',
                     data: {}
-                  }),
+                  })
                 }
-              );
-              break;
+              )
+              break
+            }
 
             // respond with Ack ?
-            case "ChannelMismatchData":
-              const channelmismatchdata = handshake.data;
+            case 'ChannelMismatchData': {
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
                   data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: "Acknowledgement",
+                    discriminator: 'Acknowledgement',
                     data: {}
-                  }),
+                  })
                 }
-              );
-              break;
-			  
+              )
+              break
+            }
+
             // this shouldn't happen
-            case "Acknowledgement":
-              throw Error("received clientbound-only Acknowledgement from server");
+            case 'Acknowledgement':
+              throw Error('received clientbound-only Acknowledgement from server')
           }
 
-          client.write("login_plugin_response", {
+          client.write('login_plugin_response', {
             messageId: data.messageId,
-            data: loginwrapperpacket,
-          });
-          break;
+            data: loginwrapperpacket
+          })
+          break
+        }
 
-	case "quark:main":
-	  const { data: quark_handshake } = proto.parsePacketBuffer(
+        case 'quark:main': {
+          const { data: quarkHandshake } = proto.parsePacketBuffer(
             PROTODEF_TYPES.HANDSHAKE,
             loginwrapper.data
-          );
+          )
 
-	  let quark_loginwrapperpacket = Buffer.alloc(0);
-
-	  switch (quark_handshake.discriminator) {
-	    // respond with Ack
-	    case "Quark":
-	      const quark = quark_handshake.data;
-	      quark_loginwrapperpacket = proto.createPacketBuffer(
-		PROTODEF_TYPES.LOGINWRAPPER,
+          let quarkLoginwrapperpacket = Buffer.alloc(0)
+          switch (quarkHandshake.discriminator) {
+            // respond with Ack
+            case 'Quark': {
+              quarkLoginwrapperpacket = proto.createPacketBuffer(
+                PROTODEF_TYPES.LOGINWRAPPER,
                 {
                   channel: FML_CHANNELS.HANDSHAKE,
                   data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: "Acknowledgement",
+                    discriminator: 'Acknowledgement',
                     data: {}
-                  }),
+                  })
                 }
-	      );
-	      break;
-	  }
+              )
+              break
+            }
+          }
 
-	  client.write("login_plugin_response", {
-	    messageId: data.messageId,
-            data: quark_loginwrapperpacket,
-	  });
-	  break;
-		      
+          client.write('login_plugin_response', {
+            messageId: data.messageId,
+            data: quarkLoginwrapperpacket
+          })
+          break
+        }
+
         default:
           console.log(
-            "other loginwrapperchannel",
+            'other loginwrapperchannel',
             loginwrapper.channel,
-            "received"
-          );
-          break;
+            'received'
+          )
+          break
       }
     } else {
-      console.log("other channel", data.channel, "received");
+      console.log('other channel', data.channel, 'received')
     }
-  });
-};
+  })
+}

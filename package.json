@@ -7,7 +7,11 @@
     "url": "git://github.com/deathcap/node-minecraft-protocol-forge.git"
   },
   "scripts": {
-    "start": "(cd examples/client_forge; node client_forge.js localhost 25565)"
+    "test": "npm run mochaTest",
+    "mochaTest": "mocha --recursive --reporter spec --exit",
+    "lint": "standard",
+    "fix": "standard --fix",
+    "pretest": "npm run lint"
   },
   "keywords": [
     "minecraft",
@@ -27,5 +31,10 @@
   "dependencies": {
     "minecraft-protocol": "^1.43.1",
     "protodef": "^1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "standard": "^17.1.0",
+    "minecraft-protocol-forge":"file:."
   }
 }

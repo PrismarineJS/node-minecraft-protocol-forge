@@ -56,10 +56,6 @@ This will automatically install the `forgeHandshake` plugin, with the appropriat
 if the server advertises itself as Forge/FML. Useful for connecting to servers you don't
 know if they are Forge or not, or what mods they are using.
 
-## Example
-
-    npm start
-
 ## Installation
 
 `npm install minecraft-protocol-forge`
@@ -71,7 +67,3 @@ You can enable some protocol debugging output using `NODE_DEBUG` environment var
 ```bash
 NODE_DEBUG="minecraft-protocol-forge" node [...]
 ```
-
-## History
-
-See https://github.com/PrismarineJS/node-minecraft-protocol/pull/326

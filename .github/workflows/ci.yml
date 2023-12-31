@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v1.4.4
+      with:
+        node-version: 18.x
+    - run: npm i && npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+    - name: Install dependencies
+      run: npm install
+    - name: Run tests
+      run: npm run mochaTest
