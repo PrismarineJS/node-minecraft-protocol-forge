@@ -127,12 +127,13 @@
             {
               "type": "varint",
               "mappings": {
-                "0": "ModList",
-                "1": "ModListReply",
-                "2": "ServerRegistry",
-                "3": "ConfigurationData",
+                "1": "ModList",
+                "2": "ModListReply",
+                "3": "ServerRegistry",
+                "4": "ConfigurationData",
                 "5": "ModData",
                 "6": "ChannelMismatchData",
+                "98": "Quark",
                 "99": "Acknowledgement"
               }
             }
@@ -197,17 +198,30 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "name": "dataPackRegistries",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "name",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
                     }
                   ]
                 ],
                 "ModListReply": [
                   "container",
                   [
-                    {
-                      "name": "modCount",
-                      "type": "varint"
-                      
-                    },
                     {
                       "name": "modNames",
                       "type": [
@@ -217,11 +231,6 @@
                           "type": "string"
                         }
                       ]
-                    },
-                    {
-                      "name": "channelCount",
-                      "type": "varint"
-                      
                     },
                     {
                       "name": "channels",
@@ -298,9 +307,74 @@
                     }
                   ]
                 ],
-                "Acknowledgement": "void",
-                "ModData" : "void",
-                "ChannelMismatchData" : "void"
+                "ModData": [
+                  "container",
+                  [
+                    {
+                      "name": "mods",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "key",
+                                "type": "string"
+                              },
+                              {
+                                "name": "value",
+                                "type": [
+                                  "container",
+                                  [
+                                    {
+                                      "name": "first",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "name": "second",
+                                      "type": "string"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "ChannelMismatchData": [
+                  "container",
+                  [
+                    {
+                      "name": "mismatchedChannelData",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "first",
+                                "type": "string"
+                              },
+                              {
+                                "name": "second",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "Quark": "void",
+                "Acknowledgement": "void"
               }
             }
           ]

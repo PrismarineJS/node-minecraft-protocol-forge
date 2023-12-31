@@ -1,0 +1,9 @@
+{
+  "name": "mineflayer-forge-simplelogin-example",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "minecraft-protocol": "^0.20.3"
+  },
+  "description": "An example of using a minecraft-protocol-forge with mineflayer and Simple Login password feature (a Forge mod aimed to protect offline servers)"
+}
