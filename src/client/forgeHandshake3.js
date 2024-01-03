@@ -279,10 +279,23 @@ module.exports = function (client, options) {
 
         default:
           console.log(
-            'other loginwrapperchannel',
-            loginwrapper.channel,
-            'received'
+              'other loginwrapperchannel',
+              loginwrapper.channel,
+              'received'
           )
+          try {
+            console.log(
+                'attempting to acknowledge',
+                loginwrapper.channel,
+                'loginwrapperchannel'
+            )
+            let AcknowledgementPacket = proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, { discriminator: "Acknowledgement" });
+            let loginWrapperPacket = proto.createPacketBuffer(PROTODEF_TYPES.LOGINWRAPPER, { channel: FML_CHANNELS.HANDSHAKE, data: AcknowledgementPacket, });
+            client.write("login_plugin_response", { messageId: data.messageId, data: loginWrapperPacket });
+            break
+          } catch (error) {
+            console.error(error);
+          }
           break
       }
     } else {
