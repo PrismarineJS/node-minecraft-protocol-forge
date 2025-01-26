@@ -5,7 +5,7 @@
 * [Create npm-publish.yml](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/e380e6c2b460bc8a32726143354d5cace06af077) (thanks @rom1504)
 * [Create commands.yml](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/68a0665d926ec96b73ed4461a724696bd63baf36) (thanks @rom1504)
 * [FML3 improvements (#28)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/53509d4639793a5752674d5cc73bcfaf338406a1) (thanks @Mykola1453)
-* [FML3 Support. (1.18.x-current) (#27)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/ec62693bb73af99845cc20f8e5dd164e2cc0ac2a) (thanks @LetsChill)
+* [FML3 Support. (1.22.x-current) (#27)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/ec62693bb73af99845cc20f8e5dd164e2cc0ac2a) (thanks @LetsChill)
 * [fix: Added missing HandshakeReset into forgeHandshake life cycle (#21)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/867c7176e7ca81146aadd40c41cbffe24d98d543) (thanks @murilopereirame)
 * [add fml2 handshake [1.13+] (#23)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/8a39efae1ce3cdb4c2650c91c71308790abe72a5) (thanks @rob9315)
 * [Update README.md (#17)](https://github.com/PrismarineJS/node-minecraft-protocol-forge/commit/936516f31310bfa4c8ec3ef4e72852152b630315) (thanks @danielpmc)
