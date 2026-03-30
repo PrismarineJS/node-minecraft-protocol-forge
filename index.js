@@ -2,5 +2,6 @@
 
 module.exports = {
   forgeHandshake: require('./src/client/forgeHandshake'),
-  autoVersionForge: require('./src/client/autoVersionForge')
+  autoVersionForge: require('./src/client/autoVersionForge'),
+  ping: require('./src/ping')
 }

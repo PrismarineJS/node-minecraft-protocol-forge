@@ -8,6 +8,7 @@ Adds FML/Forge support to [node-minecraft-protocol](https://github.com/Prismarin
 
 * Supports the `FML|HS` client handshake
 * Adds automatic Forge mod detection to node-minecraft-protocol's auto-versioning
+* Adds ping implement for `FML3` `forgeData` to get Forge mods and channels
 
 ## Usage
 
