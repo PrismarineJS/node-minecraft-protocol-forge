@@ -4,7 +4,7 @@ const forgeHandshake = require('./forgeHandshake')
 const forgeHandshake2 = require('./forgeHandshake2')
 const forgeHandshake3 = require('./forgeHandshake3')
 
-module.exports = function (client, options) {
+module.exports = function (client, autoVersionOptions) {
   if (!client.autoVersionHooks) client.autoVersionHooks = []
 
   client.autoVersionHooks.push(function (response, client, options) {
@@ -12,8 +12,8 @@ module.exports = function (client, options) {
       return // not ours
     }
 
-    // Use the list of Forge mods from the server ping, so client will match server
-    const forgeMods = response.modinfo.modList
+    // If forgeMods not specified, reflect the mods from the server ping to match.
+    const forgeMods = autoVersionOptions.forgeMods || response.modinfo.modList
     console.log('Using forgeMods:', forgeMods)
 
     // Install the FML|HS plugin with the given mods
@@ -25,8 +25,8 @@ module.exports = function (client, options) {
       return // not ours
     }
 
-    // Use the list of Forge mods from the server ping, so client will match server
-    const forgeMods = response.forgeData.mods
+    // If forgeMods not specified, reflect the mods from the server ping to match.
+    const forgeMods = autoVersionOptions.forgeMods || response.forgeData.mods
     console.log('Using forgeMods:', forgeMods)
 
     // Install the FML2 plugin with the given mods
@@ -38,8 +38,8 @@ module.exports = function (client, options) {
       return // not ours
     }
 
-    // Use the list of Forge mods from the server ping, so client will match server
-    const forgeMods = response.forgeData.mods
+    // If forgeMods not specified, reflect the mods from the server ping to match.
+    const forgeMods = autoVersionOptions.forgeMods || response.forgeData.mods
     console.log('Using forgeMods:', forgeMods)
 
     // Install the FML3 plugin with the given mods
