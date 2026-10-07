@@ -3,152 +3,8 @@ const assert = require('assert')
 const debug = require('../../debug')
 
 const proto = new ProtoDef()
-// copied from ../../dist/transforms/serializer.js TODO: refactor
-proto.addType('string', [
-  'pstring',
-  {
-    countType: 'varint'
-  }
-])
-
-// http://wiki.vg/Minecraft_Forge_Handshake
-// TODO: move to https://github.com/PrismarineJS/minecraft-data
-proto.addType('fml|hsMapper', [
-  'mapper',
-  {
-    type: 'i8',
-    mappings: {
-      0: 'ServerHello',
-      1: 'ClientHello',
-      2: 'ModList',
-      3: 'RegistryData',
-      '-1': 'HandshakeAck',
-      '-2': 'HandshakeReset'
-    }
-  }
-])
-
-proto.addType('FML|HS', [
-  'container',
-  [
-    {
-      name: 'discriminator',
-      type: 'fml|hsMapper'
-    },
-
-    {
-      anon: true,
-      type: [
-        'switch',
-        {
-          compareTo: 'discriminator',
-          fields: {
-            ServerHello: [
-              'container',
-              [
-                {
-                  name: 'fmlProtocolVersion',
-                  type: 'i8'
-                },
-                {
-                  name: 'overrideDimension',
-                  type: [
-                    'switch',
-                    {
-                      // "Only sent if protocol version is greater than 1."
-                      compareTo: 'fmlProtocolVersion',
-                      fields: {
-                        0: 'void',
-                        1: 'void'
-                      },
-                      default: 'i32'
-                    }
-                  ]
-                }
-              ]
-            ],
-
-            ClientHello: [
-              'container',
-              [
-                {
-                  name: 'fmlProtocolVersion',
-                  type: 'i8'
-                }
-              ]
-            ],
-
-            ModList: [
-              'container',
-              [
-                {
-                  name: 'mods',
-                  type: [
-                    'array',
-                    {
-                      countType: 'varint',
-                      type: [
-                        'container',
-                        [
-                          {
-                            name: 'modid',
-                            type: 'string'
-                          },
-                          {
-                            name: 'version',
-                            type: 'string'
-                          }
-                        ]
-                      ]
-                    }
-                  ]
-                }
-              ]
-            ],
-
-            RegistryData: [
-              'container',
-              [
-                {
-                  name: 'hasMore',
-                  type: 'bool'
-                }
-
-                /* TODO: support all fields http://wiki.vg/Minecraft_Forge_Handshake#RegistryData
-                   * TODO: but also consider http://wiki.vg/Minecraft_Forge_Handshake#ModIdData
-                   *  and https://github.com/ORelio/Minecraft-Console-Client/pull/100/files#diff-65b97c02a9736311374109e22d30ca9cR297
-                  {
-                    "name": "registryName",
-                    "type": "string"
-                  },
-                  */
-              ]
-            ],
-
-            HandshakeAck: [
-              'container',
-              [
-                {
-                  name: 'phase',
-                  type: 'i8'
-                }
-              ]
-            ],
-            HandshakeReset: [
-              'container',
-              [
-                {
-                  name: 'phase',
-                  type: 'i8'
-                }
-              ]
-            ]
-          }
-        }
-      ]
-    }
-  ]
-])
+// RegistryData currently decodes only its sequencing prefix, not FML1 mappings.
+proto.addTypes(require('./data/fml1.json').types)
 
 function writeAck (client, phase) {
   const ackData = proto.createPacketBuffer('FML|HS', {
@@ -174,8 +30,9 @@ function fmlHandshakeStep (client, data, options) {
   const parsed = proto.parsePacketBuffer('FML|HS', data)
   debug('FML|HS', parsed)
 
-  const fmlHandshakeState =
-    client.fmlHandshakeState || FMLHandshakeClientState.RESET
+  const fmlHandshakeState = parsed.data.discriminator === 'HandshakeReset'
+    ? FMLHandshakeClientState.RESET
+    : (client.fmlHandshakeState || FMLHandshakeClientState.START)
 
   switch (fmlHandshakeState) {
     case FMLHandshakeClientState.START: {
@@ -227,13 +84,7 @@ function fmlHandshakeStep (client, data, options) {
       // Emit event so client can check client/server mod compatibility
       client.emit('forgeMods', parsed.data.mods)
 
-      if (client.fmlHandshakeReset) {
-        writeAck(client, FMLHandshakeClientState.PENDINGCOMPLETE)
-        client.fmlHandshakeState = FMLHandshakeClientState.PENDINGCOMPLETE
-      } else {
-        client.fmlHandshakeState =
-          FMLHandshakeClientState.WAITINGSERVERCOMPLETE
-      }
+      client.fmlHandshakeState = FMLHandshakeClientState.WAITINGSERVERCOMPLETE
       break
     }
 
@@ -243,7 +94,6 @@ function fmlHandshakeStep (client, data, options) {
         `expected RegistryData in WAITINGSERVERCOMPLETE, got ${parsed.data.discriminator}`
       )
       debug('RegistryData', parsed.data)
-      console.log('RegistryData', parsed)
       if (
         client.version === '1.7.10' || // actually ModIdData packet, and there is only one of those TODO: avoid hardcoding version, allow earlier
         parsed.data.hasMore === false
@@ -288,9 +138,7 @@ function fmlHandshakeStep (client, data, options) {
         `expected HandshakeReset in RESET state, got ${parsed.data.discriminator}`
       )
 
-      writeAck(client, FMLHandshakeClientState.START)
       client.fmlHandshakeState = FMLHandshakeClientState.START
-      client.fmlHandshakeReset = true
       debug('HandshakeReset!')
       break
     }

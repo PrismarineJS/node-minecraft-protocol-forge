@@ -1,0 +1,93 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "registrySync": [
+      "array",
+      {
+        "countType": "varint",
+        "type": [
+          "container",
+          [
+            {
+              "name": "namespace",
+              "type": "string"
+            },
+            {
+              "name": "registries",
+              "type": [
+                "array",
+                {
+                  "countType": "varint",
+                  "type": [
+                    "container",
+                    [
+                      {
+                        "name": "path",
+                        "type": "string"
+                      },
+                      {
+                        "name": "attributes",
+                        "type": "u8"
+                      },
+                      {
+                        "name": "namespaces",
+                        "type": [
+                          "array",
+                          {
+                            "countType": "varint",
+                            "type": [
+                              "container",
+                              [
+                                {
+                                  "name": "namespace",
+                                  "type": "string"
+                                },
+                                {
+                                  "name": "bulks",
+                                  "type": [
+                                    "array",
+                                    {
+                                      "countType": "varint",
+                                      "type": [
+                                        "container",
+                                        [
+                                          {
+                                            "name": "delta",
+                                            "type": "varint"
+                                          },
+                                          {
+                                            "name": "paths",
+                                            "type": [
+                                              "array",
+                                              {
+                                                "countType": "varint",
+                                                "type": "string"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

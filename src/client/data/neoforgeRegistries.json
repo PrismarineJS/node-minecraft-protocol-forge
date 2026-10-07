@@ -1,0 +1,70 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "names": [
+      "array",
+      {
+        "countType": "varint",
+        "type": "string"
+      }
+    ],
+    "registry": [
+      "container",
+      [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "ids",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "value",
+                    "type": "varint"
+                  },
+                  {
+                    "name": "key",
+                    "type": "string"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "aliases",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "key",
+                    "type": "string"
+                  },
+                  {
+                    "name": "value",
+                    "type": "string"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}

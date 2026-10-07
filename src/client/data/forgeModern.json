@@ -1,0 +1,146 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "packet": [
+      "container",
+      [
+        {
+          "name": "id",
+          "type": "varint"
+        },
+        {
+          "name": "data",
+          "type": [
+            "switch",
+            {
+              "compareTo": "id",
+              "fields": {
+                "0": [
+                  "container",
+                  [
+                    {
+                      "name": "token",
+                      "type": "varint"
+                    }
+                  ]
+                ],
+                "1": [
+                  "array",
+                  {
+                    "countType": "varint",
+                    "type": [
+                      "container",
+                      [
+                        {
+                          "name": "id",
+                          "type": "string"
+                        },
+                        {
+                          "name": "name",
+                          "type": "string"
+                        },
+                        {
+                          "name": "version",
+                          "type": "string"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                "2": [
+                  "array",
+                  {
+                    "countType": "varint",
+                    "type": [
+                      "container",
+                      [
+                        {
+                          "name": "name",
+                          "type": "string"
+                        },
+                        {
+                          "name": "version",
+                          "type": "varint"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                "3": [
+                  "container",
+                  [
+                    {
+                      "name": "token",
+                      "type": "varint"
+                    },
+                    {
+                      "name": "normal",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "datapacks",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "4": [
+                  "container",
+                  [
+                    {
+                      "name": "token",
+                      "type": "varint"
+                    },
+                    {
+                      "name": "name",
+                      "type": "string"
+                    },
+                    {
+                      "name": "snapshot",
+                      "type": "restBuffer"
+                    }
+                  ]
+                ],
+                "5": [
+                  "container",
+                  [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    },
+                    {
+                      "name": "data",
+                      "type": [
+                        "buffer",
+                        {
+                          "countType": "varint"
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "6": "restBuffer"
+              }
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}

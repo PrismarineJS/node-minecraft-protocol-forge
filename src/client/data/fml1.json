@@ -1,0 +1,125 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "fml|hsMapper": [
+      "mapper",
+      {
+        "type": "i8",
+        "mappings": {
+          "0": "ServerHello",
+          "1": "ClientHello",
+          "2": "ModList",
+          "3": "RegistryData",
+          "-1": "HandshakeAck",
+          "-2": "HandshakeReset"
+        }
+      }
+    ],
+    "FML|HS": [
+      "container",
+      [
+        {
+          "name": "discriminator",
+          "type": "fml|hsMapper"
+        },
+        {
+          "anon": true,
+          "type": [
+            "switch",
+            {
+              "compareTo": "discriminator",
+              "fields": {
+                "ServerHello": [
+                  "container",
+                  [
+                    {
+                      "name": "fmlProtocolVersion",
+                      "type": "i8"
+                    },
+                    {
+                      "name": "overrideDimension",
+                      "type": [
+                        "switch",
+                        {
+                          "compareTo": "fmlProtocolVersion",
+                          "fields": {
+                            "0": "void",
+                            "1": "void"
+                          },
+                          "default": "i32"
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "ClientHello": [
+                  "container",
+                  [
+                    {
+                      "name": "fmlProtocolVersion",
+                      "type": "i8"
+                    }
+                  ]
+                ],
+                "ModList": [
+                  "container",
+                  [
+                    {
+                      "name": "mods",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": [
+                            "container",
+                            [
+                              {
+                                "name": "modid",
+                                "type": "string"
+                              },
+                              {
+                                "name": "version",
+                                "type": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                ],
+                "RegistryData": [
+                  "container",
+                  [
+                    {
+                      "name": "hasMore",
+                      "type": "bool"
+                    }
+                  ]
+                ],
+                "HandshakeAck": [
+                  "container",
+                  [
+                    {
+                      "name": "phase",
+                      "type": "i8"
+                    }
+                  ]
+                ],
+                "HandshakeReset": [
+                  "container",
+                  []
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}

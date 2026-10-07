@@ -26,9 +26,10 @@
   "author": "deathcap",
   "license": "BSD-3-Clause",
   "engines": {
-    "node": ">=4"
+    "node": ">=22"
   },
   "dependencies": {
+    "minecraft-data": "^3.109.0",
     "minecraft-protocol": "^1.43.1",
     "protodef": "^1.0.0"
   },

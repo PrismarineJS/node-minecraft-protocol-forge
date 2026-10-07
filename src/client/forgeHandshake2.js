@@ -1,5 +1,6 @@
 const ProtoDef = require('protodef').ProtoDef
 const debug = require('debug')('minecraft-protocol-forge')
+const { installCommandRegistry } = require('./commandRegistry')
 
 // Channels
 const FML_CHANNELS = {
@@ -55,6 +56,7 @@ proto.addProtocol(require('./data/fml2.json'), ['fml2'])
  * }} options
  */
 module.exports = function (client, options) {
+  if (client.version) installCommandRegistry(client)
   const modNames = options.forgeMods
   const channels = options.channels
   const registries = options.registries
@@ -120,7 +122,7 @@ module.exports = function (client, options) {
                 registries: []
               }
 
-              if (!options.modNames) {
+              if (!modNames) {
                 modlistreply.modNames = modlist.modNames
               }
 

@@ -1,0 +1,231 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "query": [
+      "array",
+      {
+        "countType": "varint",
+        "type": [
+          "container",
+          [
+            {
+              "name": "phase",
+              "type": "varint"
+            },
+            {
+              "name": "channels",
+              "type": [
+                "array",
+                {
+                  "countType": "varint",
+                  "type": [
+                    "container",
+                    [
+                      {
+                        "name": "name",
+                        "type": "string"
+                      },
+                      {
+                        "name": "version",
+                        "type": "string"
+                      },
+                      {
+                        "name": "flow",
+                        "type": [
+                          "option",
+                          "varint"
+                        ]
+                      },
+                      {
+                        "name": "optional",
+                        "type": "bool"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    ],
+    "setup": [
+      "array",
+      {
+        "countType": "varint",
+        "type": [
+          "container",
+          [
+            {
+              "name": "phase",
+              "type": "varint"
+            },
+            {
+              "name": "channels",
+              "type": [
+                "array",
+                {
+                  "countType": "varint",
+                  "type": [
+                    "container",
+                    [
+                      {
+                        "name": "key",
+                        "type": "string"
+                      },
+                      {
+                        "name": "name",
+                        "type": "string"
+                      },
+                      {
+                        "name": "version",
+                        "type": "string"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    ],
+    "legacyQuery": [
+      "container",
+      [
+        {
+          "name": "configuration",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "version",
+                    "type": [
+                      "option",
+                      "string"
+                    ]
+                  },
+                  {
+                    "name": "flow",
+                    "type": [
+                      "option",
+                      "varint"
+                    ]
+                  },
+                  {
+                    "name": "optional",
+                    "type": "bool"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "play",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "version",
+                    "type": [
+                      "option",
+                      "string"
+                    ]
+                  },
+                  {
+                    "name": "flow",
+                    "type": [
+                      "option",
+                      "varint"
+                    ]
+                  },
+                  {
+                    "name": "optional",
+                    "type": "bool"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "legacySetup": [
+      "container",
+      [
+        {
+          "name": "configuration",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "version",
+                    "type": [
+                      "option",
+                      "string"
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "name": "play",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": [
+                "container",
+                [
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "version",
+                    "type": [
+                      "option",
+                      "string"
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}

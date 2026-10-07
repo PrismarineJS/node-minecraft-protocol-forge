@@ -1,5 +1,6 @@
 const ProtoDef = require('protodef').ProtoDef
 const debug = require('debug')('minecraft-protocol-forge')
+const { installCommandRegistry } = require('./commandRegistry')
 
 // Channels
 const FML_CHANNELS = {
@@ -44,6 +45,20 @@ proto.addTypes({
 
 proto.addProtocol(require('./data/fml3.json'), ['fml3'])
 
+// Forge 1.18.2 omits an empty data-pack registry list at the end of ModList.
+// Later versions always send the count, including when it is zero.
+const dataPackRegistryList = ['array', {
+  countType: 'varint',
+  type: ['container', [{ name: 'name', type: 'string' }]]
+}]
+proto.addType('optionalDataPackRegistries', [
+  (buffer, offset) => offset === buffer.length
+    ? { value: [], size: 0 }
+    : proto.read(buffer, offset, dataPackRegistryList),
+  (value, buffer, offset) => proto.write(value, buffer, offset, dataPackRegistryList),
+  value => proto.sizeOf(value, dataPackRegistryList)
+])
+
 /**
  * FML3 handshake to the server.
  * ! There is no wiki for it.
@@ -51,13 +66,16 @@ proto.addProtocol(require('./data/fml3.json'), ['fml3'])
  * @param {{
  *  forgeMods: Array.<string> | undefined,
  *  channels: Object.<string, string> | undefined,
- *  registries: Object.<string, string> | undefined
+ *  registries: Object.<string, string> | undefined,
+ *  loginHandlers: Object.<string, function(Buffer, Object): (Buffer|undefined)> | undefined
  * }} options
  */
-module.exports = function (client, options) {
+module.exports = function (client, options = {}) {
+  if (client.version) installCommandRegistry(client)
   const modNames = options.forgeMods
   const channels = options.channels
   const registries = options.registries
+  const loginHandlers = options.loginHandlers || {}
 
   // passed to src/client/setProtocol.js, signifies client supports FML2/Forge
   client.tagHost = '\0FML3\0'
@@ -87,7 +105,7 @@ module.exports = function (client, options) {
   // remove default login_plugin_request listener which would answer with an empty packet
   // and make the server disconnect us
   const nmplistener = client.listeners('login_plugin_request').find((fn) => fn.name === 'onLoginPluginRequest')
-  client.removeListener('login_plugin_request', nmplistener)
+  if (nmplistener) client.removeListener('login_plugin_request', nmplistener)
 
   client.on('login_plugin_request', (data) => {
     if (data.channel === 'fml:loginwrapper') {
@@ -120,7 +138,7 @@ module.exports = function (client, options) {
                 registries: []
               }
 
-              if (!options.modNames) {
+              if (!modNames) {
                 modlistreply.modNames = modlist.modNames
               }
 
@@ -176,6 +194,9 @@ module.exports = function (client, options) {
 
             // respond with Ack
             case 'ServerRegistry': {
+              if (handshake.data.name === 'minecraft:command_argument_type' && handshake.data.snapshot) {
+                installCommandRegistry(client, handshake.data.snapshot)
+              }
               loginwrapperpacket = proto.createPacketBuffer(
                 PROTODEF_TYPES.LOGINWRAPPER,
                 {
@@ -204,19 +225,9 @@ module.exports = function (client, options) {
               break
             }
 
-            // respond with Ack
+            // Forge marks ModData as noResponse(), so it must not be acknowledged.
             case 'ModData': {
-              loginwrapperpacket = proto.createPacketBuffer(
-                PROTODEF_TYPES.LOGINWRAPPER,
-                {
-                  channel: FML_CHANNELS.HANDSHAKE,
-                  data: proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, {
-                    discriminator: 'Acknowledgement',
-                    data: {}
-                  })
-                }
-              )
-              break
+              return
             }
 
             // respond with Ack ?
@@ -246,17 +257,28 @@ module.exports = function (client, options) {
           break
         }
 
-        default:
-          try {
-            console.log('other loginwrapperchannel', loginwrapper.channel, 'received, sending acknowledgement packet')
-            const AcknowledgementPacket = proto.createPacketBuffer(PROTODEF_TYPES.HANDSHAKE, { discriminator: 'Acknowledgement' })
-            const loginWrapperPacket = proto.createPacketBuffer(PROTODEF_TYPES.LOGINWRAPPER, { channel: FML_CHANNELS.HANDSHAKE, data: AcknowledgementPacket })
-            client.write('login_plugin_response', { messageId: data.messageId, data: loginWrapperPacket })
+        default: {
+          client.emit('forgeLoginPluginRequest', {
+            messageId: data.messageId,
+            channel: loginwrapper.channel,
+            data: loginwrapper.data
+          })
+          if (!loginHandlers[loginwrapper.channel]) {
+            client.write('login_plugin_response', { messageId: data.messageId })
             break
-          } catch (error) {
-            console.error(error)
           }
+          const response = loginHandlers[loginwrapper.channel](loginwrapper.data, data)
+          if (response !== undefined && !Buffer.isBuffer(response)) {
+            throw new TypeError(`Login handler for ${loginwrapper.channel} must return a Buffer or undefined`)
+          }
+          client.write('login_plugin_response', {
+            messageId: data.messageId,
+            data: response === undefined
+              ? undefined
+              : proto.createPacketBuffer(PROTODEF_TYPES.LOGINWRAPPER, { channel: loginwrapper.channel, data: response })
+          })
           break
+        }
       }
     } else {
       console.log('other channel', data.channel, 'received')

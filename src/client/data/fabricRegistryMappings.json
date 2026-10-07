@@ -1,0 +1,10 @@
+{
+  "1.21.11": {
+    "minecraft:particle_type": {
+      "aliases": {
+        "minecraft:trial_spawner_detection": "trial_spawner_detected_player",
+        "minecraft:trial_spawner_detection_ominous": "trial_spawner_detected_player_ominous"
+      }
+    }
+  }
+}

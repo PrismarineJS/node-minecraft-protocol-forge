@@ -200,21 +200,7 @@
                     },
                     {
                       "name": "dataPackRegistries",
-                      "type": [
-                        "array",
-                        {
-                          "countType": "varint",
-                          "type": [
-                            "container",
-                            [
-                              {
-                                "name": "name",
-                                "type": "string"
-                              }
-                            ]
-                          ]
-                        }
-                      ]
+                      "type": "optionalDataPackRegistries"
                     }
                   ]
                 ],
@@ -288,7 +274,7 @@
                       "name": "snapshot",
                       "type": [
                         "option",
-                        "forge_snapshot"
+                        "restBuffer"
                       ]
                     }
                   ]

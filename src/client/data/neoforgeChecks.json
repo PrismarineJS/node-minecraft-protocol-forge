@@ -1,0 +1,65 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "flags": [
+      "array",
+      {
+        "countType": "varint",
+        "type": "string"
+      }
+    ],
+    "enums": [
+      "array",
+      {
+        "countType": "varint",
+        "type": [
+          "container",
+          [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "direction",
+              "type": "string"
+            },
+            {
+              "name": "extension",
+              "type": [
+                "option",
+                [
+                  "container",
+                  [
+                    {
+                      "name": "vanillaCount",
+                      "type": "varint"
+                    },
+                    {
+                      "name": "totalCount",
+                      "type": "varint"
+                    },
+                    {
+                      "name": "entries",
+                      "type": [
+                        "array",
+                        {
+                          "countType": "varint",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  ]
+                ]
+              ]
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

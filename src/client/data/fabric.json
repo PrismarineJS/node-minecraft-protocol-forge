@@ -1,0 +1,47 @@
+{
+  "types": {
+    "string": [
+      "pstring",
+      {
+        "countType": "varint"
+      }
+    ],
+    "versions": [
+      "array",
+      {
+        "countType": "varint",
+        "type": "varint"
+      }
+    ],
+    "names": [
+      "array",
+      {
+        "countType": "varint",
+        "type": "string"
+      }
+    ],
+    "registration": [
+      "container",
+      [
+        {
+          "name": "version",
+          "type": "varint"
+        },
+        {
+          "name": "phase",
+          "type": "string"
+        },
+        {
+          "name": "channels",
+          "type": [
+            "array",
+            {
+              "countType": "varint",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}
